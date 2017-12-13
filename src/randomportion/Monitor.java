@@ -31,9 +31,9 @@ public class Monitor {
                 prodIsWaiting = true;
                 firstProducing.await();
             }
-            prodIsWaiting = false;
             value += portion;
             producer.prompt();
+            prodIsWaiting = false;
             if(waitingProducers > 0) restProducing.signal();
             firstConsuming.signal();
         } catch(Exception e){
@@ -55,9 +55,9 @@ public class Monitor {
                 consIsWaiting = true;
                 firstConsuming.await();
             }
-            consIsWaiting = false;
             value -= portion;
             consumer.prompt();
+            consIsWaiting = false;
             if(waitingConsumers > 0) restConsuming.signal();
             firstProducing.signal();
         } catch(Exception e){
