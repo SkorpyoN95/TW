@@ -27,8 +27,8 @@ public class Monitor {
                 restProducing.await();
                 waitingProducers--;
             }
-            prodIsWaiting = true;
             while(2*M < value + portion){
+                prodIsWaiting = true;
                 firstProducing.await();
             }
             prodIsWaiting = false;
@@ -51,8 +51,8 @@ public class Monitor {
                 restConsuming.await();
                 waitingConsumers--;
             }
-            consIsWaiting = true;
             while(value < portion){
+                consIsWaiting = true;
                 firstConsuming.await();
             }
             consIsWaiting = false;
