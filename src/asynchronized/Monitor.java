@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Monitor {
-    private Buffer buffer;
     private LinkedList<Integer> emptyElems = new LinkedList<>(),
                                 fullElems = new LinkedList<>();
     private final Lock lock = new ReentrantLock(true);
@@ -20,7 +19,6 @@ public class Monitor {
     private boolean prodIsWaiting = false, consIsWaiting = false;
 
     public Monitor(Buffer buffer) {
-        this.buffer = buffer;
         emptyElems.addAll(IntStream.range(0, buffer.getSize()).boxed().collect(Collectors.toList()));
     }
 
