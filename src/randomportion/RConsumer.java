@@ -2,19 +2,19 @@ package randomportion;
 
 import java.util.Random;
 
-public class Consumer implements Runnable {
-    private Monitor monitor;
+public class RConsumer implements Runnable {
+    private RMonitor monitor;
     private final int portion;
     private final int number;
 
-    public Consumer(Monitor monitor, int number) {
+    public RConsumer(RMonitor monitor, int number) {
         this.monitor = monitor;
         Random generator = new Random();
         portion = generator.nextInt(monitor.M-1) + 1;
         this.number = number;
     }
 
-    public Consumer(Monitor monitor, int number, int portion) {
+    public RConsumer(RMonitor monitor, int number, int portion) {
 
         this.monitor = monitor;
         this.portion = portion;

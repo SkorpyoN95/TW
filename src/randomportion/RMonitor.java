@@ -4,7 +4,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Monitor {
+public class RMonitor {
     public final int M;
     private int value = 0;
     private final Lock lock = new ReentrantLock(true);
@@ -15,11 +15,11 @@ public class Monitor {
     private int waitingProducers = 0, waitingConsumers = 0;
     private boolean prodIsWaiting = false, consIsWaiting = false;
 
-    public Monitor(int m) {
+    public RMonitor(int m) {
         M = m;
     }
 
-    public void produce(int portion, Producer producer){
+    public void produce(int portion, RProducer producer){
         lock.lock();
         try{
             if(prodIsWaiting){
@@ -43,7 +43,7 @@ public class Monitor {
         }
     }
 
-    public void consume(int portion, Consumer consumer){
+    public void consume(int portion, RConsumer consumer){
         lock.lock();
         try{
             if(consIsWaiting){

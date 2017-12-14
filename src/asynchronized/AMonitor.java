@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Monitor {
+public class AMonitor {
     private LinkedList<Integer> emptyElems = new LinkedList<>(),
                                 fullElems = new LinkedList<>();
     private final Lock lock = new ReentrantLock(true);
@@ -18,7 +18,7 @@ public class Monitor {
     private int waitingProducers = 0, waitingConsumers = 0;
     private boolean prodIsWaiting = false, consIsWaiting = false;
 
-    public Monitor(Buffer buffer) {
+    public AMonitor(Buffer buffer) {
         emptyElems.addAll(IntStream.range(0, buffer.getSize()).boxed().collect(Collectors.toList()));
     }
 

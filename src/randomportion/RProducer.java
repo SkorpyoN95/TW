@@ -2,18 +2,18 @@ package randomportion;
 
 import java.util.Random;
 
-public class Producer implements Runnable {
-    private Monitor monitor;
+public class RProducer implements Runnable {
+    private RMonitor monitor;
     private final int portion;
     private final int number;
 
-    public Producer(Monitor monitor, int number, int portion) {
+    public RProducer(RMonitor monitor, int number, int portion) {
         this.monitor = monitor;
         this.portion = portion;
         this.number = number;
     }
 
-    public Producer(Monitor monitor, int number) {
+    public RProducer(RMonitor monitor, int number) {
         this.monitor = monitor;
         Random generator = new Random();
         portion = generator.nextInt(monitor.M-1) + 1;

@@ -4,22 +4,22 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class Consumer implements Runnable {
-    private Monitor monitor;
+    private AMonitor AMonitor;
     private Buffer buffer;
     private final int portion;
     private final int number;
 
-    public Consumer(Monitor monitor, Buffer buffer, int number) {
-        this.monitor = monitor;
+    public Consumer(AMonitor AMonitor, Buffer buffer, int number) {
+        this.AMonitor = AMonitor;
         this.buffer = buffer;
         Random generator = new Random();
         portion = generator.nextInt(buffer.getSize() / 2) + 1;
         this.number = number;
     }
 
-    public Consumer(Monitor monitor, Buffer buffer, int number, int portion) {
+    public Consumer(AMonitor AMonitor, Buffer buffer, int number, int portion) {
 
-        this.monitor = monitor;
+        this.AMonitor = AMonitor;
         this.buffer = buffer;
         this.portion = portion;
         this.number = number;
@@ -28,11 +28,11 @@ public class Consumer implements Runnable {
     @Override
     public void run() {
         while(true){
-            LinkedList<Integer> res =  monitor.startConsume(portion);
+            LinkedList<Integer> res =  AMonitor.startConsume(portion);
             for(int i : res){
                 buffer.getElem(i);
             }
-            monitor.endConsume(res, this);
+            AMonitor.endConsume(res, this);
         }
     }
 

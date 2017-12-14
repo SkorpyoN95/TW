@@ -4,22 +4,22 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class Producer implements Runnable {
-    private Monitor monitor;
+    private AMonitor AMonitor;
     private Buffer buffer;
     private final int portion;
     private final int number;
 
-    public Producer(Monitor monitor, Buffer buffer, int number) {
-        this.monitor = monitor;
+    public Producer(AMonitor AMonitor, Buffer buffer, int number) {
+        this.AMonitor = AMonitor;
         this.buffer = buffer;
         Random generator = new Random();
         portion = generator.nextInt(buffer.getSize() / 2) + 1;
         this.number = number;
     }
 
-    public Producer(Monitor monitor, Buffer buffer, int number, int portion) {
+    public Producer(AMonitor AMonitor, Buffer buffer, int number, int portion) {
 
-        this.monitor = monitor;
+        this.AMonitor = AMonitor;
         this.buffer = buffer;
         this.portion = portion;
         this.number = number;
@@ -29,11 +29,11 @@ public class Producer implements Runnable {
     public void run() {
         Random generator = new Random();
         while(true){
-            LinkedList<Integer> res =  monitor.startProduce(portion);
+            LinkedList<Integer> res =  AMonitor.startProduce(portion);
             for(int i : res){
                 buffer.setElem(i, generator.nextInt(10000));
             }
-            monitor.endProduce(res, this);
+            AMonitor.endProduce(res, this);
         }
     }
 
