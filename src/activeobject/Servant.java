@@ -1,5 +1,7 @@
 package activeobject;
 
+import static java.lang.Thread.sleep;
+
 public class Servant {
     public final int M;
     private int value;
@@ -10,12 +12,12 @@ public class Servant {
 
     public void produce(int portion){
         value += portion;
-        System.out.println("Portion produced.");
+        //System.out.println("Portion produced.");
     }
 
     public void consume(int portion){
         value -= portion;
-        System.out.println("Portion consumed.");
+        //System.out.println("Portion consumed.");
     }
 
     public int getValue(){

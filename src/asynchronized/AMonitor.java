@@ -52,7 +52,7 @@ public class AMonitor {
         lock.lock();
         try{
             fullElems.addAll(elems);
-            producer.prompt();
+            //producer.prompt();
             firstConsuming.signal();
         } catch(Exception e){
             e.printStackTrace();
@@ -91,7 +91,7 @@ public class AMonitor {
         lock.lock();
         try{
             emptyElems.addAll(elems);
-            consumer.prompt();
+            //consumer.prompt();
             firstProducing.signal();
         } catch(Exception e){
             e.printStackTrace();

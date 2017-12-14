@@ -4,6 +4,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.lang.Thread.sleep;
+
 public class RMonitor {
     public final int M;
     private int value = 0;
@@ -32,7 +34,7 @@ public class RMonitor {
                 firstProducing.await();
             }
             value += portion;
-            producer.prompt();
+            //producer.prompt();
             prodIsWaiting = false;
             if(waitingProducers > 0) restProducing.signal();
             firstConsuming.signal();
@@ -56,7 +58,7 @@ public class RMonitor {
                 firstConsuming.await();
             }
             value -= portion;
-            consumer.prompt();
+            //consumer.prompt();
             consIsWaiting = false;
             if(waitingConsumers > 0) restConsuming.signal();
             firstProducing.signal();
