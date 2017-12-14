@@ -1,7 +1,5 @@
 package activeobject;
 
-import asynchronized.Producer;
-
 public class Proxy {
     private final Scheduler scheduler;
     private final Servant servant;
