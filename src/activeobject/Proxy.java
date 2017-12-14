@@ -22,4 +22,8 @@ public class Proxy {
         scheduler.enqueueConsumer(mr);
         return future;
     }
+
+    public int getServantSize(){
+        return servant.M;
+    }
 }

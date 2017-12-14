@@ -1,26 +1,26 @@
-//import randomportion.*;
+import randomportion.*;
 //import asynchronized.*;
-import activeobject.*;
+//import activeobject.*;
 
 import java.util.Random;
 
 public class Main {
     private static final int M = 10;
     private static final int N = 3;
-    //private static final Monitor monitor = new Monitor(M);
+    private static final randomportion.Monitor monitor = new randomportion.Monitor(M);
     //private static Buffer buffer = new Buffer(M);
-    //private static final Monitor monitor = new Monitor(buffer);
-    private static final Servant servant = new Servant(M);
-    private static final Scheduler scheduler = new Scheduler();
-    private static final Proxy proxy = new Proxy(scheduler, servant);
+    //private static final asynchronized.Monitor monitor2 = new asynchronized.Monitor(buffer);
+    //private static final Servant servant = new Servant(M);
+    //private static final Scheduler scheduler = new Scheduler();
+    //private static final Proxy proxy = new Proxy(scheduler, servant);
 
     public static void main(String[] args){
         //pcrandTest(N);
         //pcasyncTest(N);
-        pcaoTest(N);
+        //pcaoTest(N);
     }
 
-    /*
+    /**/
     private static void pcrandTest(int nn){
         Thread[] producers = new Thread[nn];
         Thread[] consumers = new Thread[nn];
@@ -38,7 +38,7 @@ public class Main {
             consumers[i].start();
         }
     }
-    *//*
+    /*
     private static void pcasyncTest(int nn){
         Thread[] producers = new Thread[nn];
         Thread[] consumers = new Thread[nn];
@@ -56,15 +56,15 @@ public class Main {
             consumers[i].start();
         }
     }
-    */
+
     private static void pcaoTest(int nn){
         Thread[] producers = new Thread[nn];
         Thread[] consumers = new Thread[nn];
         Random generator = new Random();
 
         for(int i = 0; i < nn; i++) {
-            producers[i] = new Thread(() -> {while(true){proxy.produce(generator.nextInt(M));}});
-            consumers[i] = new Thread(() -> {while(true){proxy.consume(generator.nextInt(M));}});
+            producers[i] = new Thread(new Producer(proxy));
+            consumers[i] = new Thread(new Consumer(proxy));
         }
 
         for(int i=0; i<nn; i++) {
@@ -72,4 +72,6 @@ public class Main {
             consumers[i].start();
         }
     }
+    */
+
 }
