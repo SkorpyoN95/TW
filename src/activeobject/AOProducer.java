@@ -2,16 +2,16 @@ package activeobject;
 
 import java.util.Random;
 
-public class Consumer implements Runnable {
+public class AOProducer implements Runnable {
     private final Proxy proxy;
     private final int portion;
 
-    public Consumer(Proxy proxy, int portion) {
+    public AOProducer(Proxy proxy, int portion) {
         this.proxy = proxy;
         this.portion = portion;
     }
 
-    public Consumer(Proxy proxy) {
+    public AOProducer(Proxy proxy) {
         this.proxy = proxy;
         Random generator = new Random();
         portion = generator.nextInt(proxy.getServantSize());
@@ -20,7 +20,7 @@ public class Consumer implements Runnable {
     @Override
     public void run() {
         while(true){
-            proxy.consume(portion);
+            proxy.produce(portion);
         }
     }
 }

@@ -3,13 +3,13 @@ package asynchronized;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class Producer implements Runnable {
+public class AConsumer implements Runnable {
     private AMonitor AMonitor;
     private Buffer buffer;
     private final int portion;
     private final int number;
 
-    public Producer(AMonitor AMonitor, Buffer buffer, int number) {
+    public AConsumer(AMonitor AMonitor, Buffer buffer, int number) {
         this.AMonitor = AMonitor;
         this.buffer = buffer;
         Random generator = new Random();
@@ -17,7 +17,7 @@ public class Producer implements Runnable {
         this.number = number;
     }
 
-    public Producer(AMonitor AMonitor, Buffer buffer, int number, int portion) {
+    public AConsumer(AMonitor AMonitor, Buffer buffer, int number, int portion) {
 
         this.AMonitor = AMonitor;
         this.buffer = buffer;
@@ -27,17 +27,16 @@ public class Producer implements Runnable {
 
     @Override
     public void run() {
-        Random generator = new Random();
         while(true){
-            LinkedList<Integer> res =  AMonitor.startProduce(portion);
+            LinkedList<Integer> res =  AMonitor.startConsume(portion);
             for(int i : res){
-                buffer.setElem(i, generator.nextInt(10000));
+                buffer.getElem(i);
             }
-            AMonitor.endProduce(res, this);
+            AMonitor.endConsume(res, this);
         }
     }
 
     public void prompt(){
-        System.out.println("I am producer #" + number + " and I just produced " + portion + " unit(s).");
+        System.out.println("I am consumer #" + number + " and I just consumed " + portion + " unit(s).");
     }
 }

@@ -48,7 +48,7 @@ public class AMonitor {
         return result;
     }
 
-    public void endProduce(LinkedList<Integer> elems, Producer producer){
+    public void endProduce(LinkedList<Integer> elems, AProducer producer){
         lock.lock();
         try{
             fullElems.addAll(elems);
@@ -87,7 +87,7 @@ public class AMonitor {
         return result;
     }
 
-    public void endConsume(LinkedList<Integer> elems, Consumer consumer){
+    public void endConsume(LinkedList<Integer> elems, AConsumer consumer){
         lock.lock();
         try{
             emptyElems.addAll(elems);
