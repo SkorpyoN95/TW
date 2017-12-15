@@ -2,16 +2,20 @@ package activeobject;
 
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Scheduler {
-    private BlockingDeque<MethodRequest> producers = new LinkedBlockingDeque<>(),
-                                        consumers = new LinkedBlockingDeque<>();
+    private BlockingDeque<MethodRequest>    producers = new LinkedBlockingDeque<>(),
+                                            consumers = new LinkedBlockingDeque<>();
+    private final Lock lock = new ReentrantLock(true);
+    private final Condition producer = lock.newCondition(),
+                            consumer = lock.newCondition();
 
     public Scheduler(){
-        Thread producer = new Thread(()->dispatch(producers));
-        Thread consumer = new Thread(()->dispatch(consumers));
-        producer.start();
-        consumer.start();
+        Thread scheduler = new Thread(()->dispatch());
+        scheduler.start();
     }
 
     public void enqueueProducer(MethodRequest mr){
@@ -30,16 +34,16 @@ public class Scheduler {
         }
     }
 
-    private void dispatch(BlockingDeque<MethodRequest> queue){
+    private void dispatch(){
+        MethodRequest mrp, mrc;
         try {
             while(true) {
-                MethodRequest mr = queue.takeFirst();
-                if(!mr.guard()){
-                    queue.putFirst(mr);
+                mrp = producers.takeFirst();
+                while(!mrp.guard()){
+                    mrc = consumers.takeFirst();
+                    mrc.call();
                 }
-                else {
-                    mr.call();
-                }
+                mrp.call();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
