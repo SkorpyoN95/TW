@@ -29,14 +29,21 @@ public class RConsumer implements Runnable {
     @Override
     public void run() {
         while(true){
-            monitor.consume(portion, this);
+            mainJob();
             doSomeJob();
+        }
+    }
+
+    private void mainJob(){
+        monitor.consume(portion, this);
+        synchronized (this){
+            counter[0]++;
         }
     }
 
     private synchronized void doSomeJob(){
         try {
-            sleep(2000);
+            sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

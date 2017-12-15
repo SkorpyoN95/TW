@@ -25,14 +25,14 @@ public class AOProducer implements Runnable {
     @Override
     public void run() {
         while(true){
-            proxy.produce(portion);
+            proxy.produce(portion, counter);
             doSomeJob();
         }
     }
 
     private synchronized void doSomeJob(){
         try {
-            sleep(2000);
+            sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

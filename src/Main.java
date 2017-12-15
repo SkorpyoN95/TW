@@ -2,7 +2,9 @@ import randomportion.*;
 import asynchronized.*;
 import activeobject.*;
 
-import java.util.Random;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 import static java.lang.Thread.sleep;
 
@@ -11,19 +13,25 @@ public class Main {
     private static final int M = 10;
     private static final int N = 3;
     private static final RMonitor monitor = new RMonitor(M);
-    private static Buffer buffer = new Buffer(M);
+    private static Buffer buffer = new Buffer(2*M);
     private static final AMonitor monitor2 = new AMonitor(buffer);
     private static final Servant servant = new Servant(M);
     private static final Scheduler scheduler = new Scheduler();
     private static final Proxy proxy = new Proxy(scheduler, servant);
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         //pcrandTest(N);
         //pcasyncTest(N);
         //pcaoTest(N);
-        aoTest(1);
+        try {
+            PrintWriter writer = new PrintWriter("results.csv", "UTF-8");
+            writer.println("threads,counter1,counter2,counter3");
+            runTests(100, writer);
+            writer.close();
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
-
     /*
     private static void pcrandTest(int nn){
         Thread[] producers = new Thread[nn];
@@ -78,14 +86,14 @@ public class Main {
     }
     /**/
 
-    private static void randTest(int nn){
+    private static int randTest(int nn){
         final int[] counter = {0};
         Thread[] producers = new Thread[nn];
         Thread[] consumers = new Thread[nn];
 
         for(int i = 0; i < nn; i++) {
-            producers[i] = new Thread(new RProducer(monitor, counter, i));
-            consumers[i] = new Thread(new RConsumer(monitor, counter, i));
+            producers[i] = new Thread(new RProducer(monitor, counter, i, i%M+1));
+            consumers[i] = new Thread(new RConsumer(monitor, counter, i, i%M+1));
         }
 
         for(int i=0; i<nn; i++) {
@@ -93,21 +101,28 @@ public class Main {
             consumers[i].start();
         }
         try {
-            sleep(20000);
+            sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("Counter is now: " + counter[0]);
+        Integer result = counter[0];
+
+        for(int i=0; i<nn; i++) {
+            producers[i].stop();
+            consumers[i].stop();
+        }
+
+        return result;
     }
 
-    private static void asyncTest(int nn){
+    private static int asyncTest(int nn){
         final int[] counter = {0};
         Thread[] producers = new Thread[nn];
         Thread[] consumers = new Thread[nn];
 
         for(int i = 0; i < nn; i++) {
-            producers[i] = new Thread(new AProducer(monitor2, buffer, counter, i));
-            consumers[i] = new Thread(new AConsumer(monitor2, buffer, counter, i));
+            producers[i] = new Thread(new AProducer(monitor2, buffer, counter, i, i%M+1));
+            consumers[i] = new Thread(new AConsumer(monitor2, buffer, counter, i, i%M+1));
         }
 
         for(int i=0; i<nn; i++) {
@@ -115,21 +130,28 @@ public class Main {
             consumers[i].start();
         }
         try {
-            sleep(20000);
+            sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("Counter is now: " + counter[0]);
+        Integer result = counter[0];
+
+        for(int i=0; i<nn; i++) {
+            producers[i].stop();
+            consumers[i].stop();
+        }
+
+        return result;
     }
 
-    private static void aoTest(int nn){
+    private static int aoTest(int nn){
         final int[] counter = {0};
         Thread[] producers = new Thread[nn];
         Thread[] consumers = new Thread[nn];
 
         for(int i = 0; i < nn; i++) {
-            producers[i] = new Thread(new AOProducer(proxy, counter));
-            consumers[i] = new Thread(new AOConsumer(proxy, counter));
+            producers[i] = new Thread(new AOProducer(proxy, counter, i%M+1));
+            consumers[i] = new Thread(new AOConsumer(proxy, counter, i%M+1));
         }
 
         for(int i=0; i<nn; i++) {
@@ -137,10 +159,26 @@ public class Main {
             consumers[i].start();
         }
         try {
-            sleep(20000);
+            sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("Counter is now: " + counter[0]);
+        Integer result = counter[0];
+
+        for(int i=0; i<nn; i++) {
+            producers[i].stop();
+            consumers[i].stop();
+        }
+
+        return result;
+    }
+
+    private static void runTests(int nn, PrintWriter pw){
+        for(int i = 1; i <= nn; i++) {
+            String line = String.format("%s,%s,%s,%s", i, randTest(i), asyncTest(i), aoTest(i));
+            System.out.println(line);
+            pw.println(line);
+        }
+        System.out.println("Finished");
     }
 }

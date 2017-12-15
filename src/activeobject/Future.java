@@ -5,10 +5,15 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Future {
-    private boolean availaible;
+    private boolean availaible = false;
     private int value;
     private final Lock lock = new ReentrantLock(true);
     private final Condition waiting = lock.newCondition();
+    private int[] counter;
+
+    public Future(int[] counter){
+        this.counter = counter;
+    }
 
     public boolean isAvailaible(){
         return availaible;
@@ -38,6 +43,7 @@ public class Future {
         try {
             value = v;
             availaible = true;
+            counter[0]++;
             waiting.signal();
         } catch (Exception e){
             e.printStackTrace();

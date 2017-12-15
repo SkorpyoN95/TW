@@ -9,15 +9,15 @@ public class Proxy {
         this.servant = servant;
     }
 
-    public Future produce(int portion){
-        Future future = new Future();
+    public Future produce(int portion, int[] counter){
+        Future future = new Future(counter);
         MethodRequest mr = new ProduceRequest(servant, future, portion);
         scheduler.enqueueProducer(mr);
         return future;
     }
     
-    public Future consume(int portion){
-        Future future = new Future();
+    public Future consume(int portion, int[] counter){
+        Future future = new Future(counter);
         MethodRequest mr = new ConsumeRequest(servant, future, portion);
         scheduler.enqueueConsumer(mr);
         return future;

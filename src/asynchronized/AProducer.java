@@ -11,6 +11,7 @@ public class AProducer implements Runnable {
     private final int portion;
     private final int number;
     private int[] counter;
+    private Random generator = new Random();
 
     public AProducer(AMonitor AMonitor, Buffer buffer, int[] counter, int number) {
         this.AMonitor = AMonitor;
@@ -32,25 +33,26 @@ public class AProducer implements Runnable {
 
     @Override
     public void run() {
-        Random generator = new Random();
         while(true){
-            LinkedList<Integer> res =  AMonitor.startProduce(portion);
-            for(int i : res){
-                buffer.setElem(i, generator.nextInt(10000));
-            }
-            try {
-                sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            AMonitor.endProduce(res, this);
+            mainJob();
             doSomeJob();
+        }
+    }
+
+    private void mainJob(){
+        LinkedList<Integer> res =  AMonitor.startProduce(portion);
+        for(int i : res){
+            buffer.setElem(i, generator.nextInt(10000));
+        }
+        AMonitor.endProduce(res, this);
+        synchronized (this){
+            counter[0]++;
         }
     }
 
     private synchronized void doSomeJob(){
         try {
-            sleep(500);
+            sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

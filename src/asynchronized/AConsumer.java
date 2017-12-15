@@ -33,23 +33,25 @@ public class AConsumer implements Runnable {
     @Override
     public void run() {
         while(true){
-            LinkedList<Integer> res =  AMonitor.startConsume(portion);
-            for(int i : res){
-                buffer.getElem(i);
-            }
-            try {
-                sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            AMonitor.endConsume(res, this);
+            mainJob();
             doSomeJob();
+        }
+    }
+
+    private void mainJob(){
+        LinkedList<Integer> res =  AMonitor.startConsume(portion);
+        for(int i : res){
+            buffer.getElem(i);
+        }
+        AMonitor.endConsume(res, this);
+        synchronized (this){
+            counter[0]++;
         }
     }
 
     private synchronized void doSomeJob(){
         try {
-            sleep(500);
+            sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
