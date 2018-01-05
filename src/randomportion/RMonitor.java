@@ -9,6 +9,7 @@ import static java.lang.Thread.sleep;
 public class RMonitor {
     public final int M;
     private int value = 0;
+    private boolean[] elems;
     private final Lock lock = new ReentrantLock(true);
     private final Condition firstProducing = lock.newCondition(),
                             restProducing = lock.newCondition(),
@@ -19,6 +20,7 @@ public class RMonitor {
 
     public RMonitor(int m) {
         M = m;
+        elems = new boolean[2*m];
     }
 
     public void produce(int portion, RProducer producer){
@@ -29,10 +31,12 @@ public class RMonitor {
                 restProducing.await();
                 waitingProducers--;
             }
-            while(2*M < value + portion){
+            while(2*M - 1 < value + portion){
                 prodIsWaiting = true;
                 firstProducing.await();
             }
+            for(int i = value, j = value + portion; i < j; ++i)
+                elems[i] = true;
             value += portion;
             //producer.prompt();
             prodIsWaiting = false;
@@ -57,6 +61,8 @@ public class RMonitor {
                 consIsWaiting = true;
                 firstConsuming.await();
             }
+            for(int i = value, j = value - portion; i > j; --i)
+                elems[i] = false;
             value -= portion;
             //consumer.prompt();
             consIsWaiting = false;

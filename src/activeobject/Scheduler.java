@@ -9,12 +9,9 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Scheduler {
     private BlockingDeque<MethodRequest>    producers = new LinkedBlockingDeque<>(),
                                             consumers = new LinkedBlockingDeque<>();
-    private final Lock lock = new ReentrantLock(true);
-    private final Condition producer = lock.newCondition(),
-                            consumer = lock.newCondition();
 
     public Scheduler(){
-        Thread scheduler = new Thread(()->dispatch());
+        Thread scheduler = new Thread(this::dispatch);
         scheduler.start();
     }
 
@@ -44,6 +41,13 @@ public class Scheduler {
                     mrc.call();
                 }
                 mrp.call();
+
+                mrc = consumers.takeFirst();
+                while(!mrc.guard()){
+                    mrp = producers.takeFirst();
+                    mrp.call();
+                }
+                mrc.call();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

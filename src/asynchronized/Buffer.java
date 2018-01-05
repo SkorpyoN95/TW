@@ -1,18 +1,18 @@
 package asynchronized;
 
 public class Buffer {
-    private int[] elems;
+    private boolean[] elems;
 
     public Buffer(int n) {
-        elems = new int[n];
+        elems = new boolean[n];
     }
 
-    public void setElem(int i, int a){
-        elems[i] = a;
+    public void setElem(int i){
+        elems[i] = true;
     }
 
-    public int getElem(int i){
-        return elems[i];
+    public void getElem(int i){
+        elems[i] = false;
     }
 
     public int getSize(){

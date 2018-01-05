@@ -13,7 +13,7 @@ public class ProduceRequest implements MethodRequest {
 
     @Override
     public boolean guard() {
-        return 2*servant.M >= servant.getValue() + portion;
+        return 2*servant.M - 1 >= servant.getValue() + portion;
     }
 
     @Override

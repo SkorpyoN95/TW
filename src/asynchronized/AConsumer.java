@@ -11,28 +11,32 @@ public class AConsumer implements Runnable {
     private final int portion;
     private final int number;
     private int[] counter;
+    private int weight;
+    static private long start_time = 0;
 
-    public AConsumer(AMonitor AMonitor, Buffer buffer, int[] counter, int number) {
+    public AConsumer(AMonitor AMonitor, Buffer buffer, int[] counter, int number, int weight) {
         this.AMonitor = AMonitor;
         this.buffer = buffer;
         Random generator = new Random();
         portion = generator.nextInt(buffer.getSize() / 2) + 1;
         this.number = number;
         this.counter = counter;
+        this.weight = weight;
     }
 
-    public AConsumer(AMonitor AMonitor, Buffer buffer, int[] counter, int number, int portion) {
+    public AConsumer(AMonitor AMonitor, Buffer buffer, int[] counter, int number, int portion, int weight) {
 
         this.AMonitor = AMonitor;
         this.buffer = buffer;
         this.portion = portion;
         this.number = number;
         this.counter = counter;
+        this.weight = weight;
     }
 
     @Override
     public void run() {
-        while(true){
+        while(System.currentTimeMillis() - start_time < 10000){
             mainJob();
             doSomeJob();
         }
@@ -45,20 +49,28 @@ public class AConsumer implements Runnable {
         }
         AMonitor.endConsume(res, this);
         synchronized (this){
-            counter[0]++;
+            if(System.currentTimeMillis() - start_time < 10000) counter[0]++;
         }
     }
 
     private synchronized void doSomeJob(){
         try {
-            sleep(1);
+            sleep(weight);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
-        counter[0]++;
+        if(System.currentTimeMillis() - start_time < 10000) counter[0]++;
     }
 
     public void prompt(){
         System.out.println("I am consumer #" + number + " and I just consumed " + portion + " unit(s).");
+    }
+
+    static public void startCounting(){
+        start_time = System.currentTimeMillis();
+    }
+
+    static public long getTimer(){
+        return start_time;
     }
 }

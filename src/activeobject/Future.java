@@ -43,7 +43,7 @@ public class Future {
         try {
             value = v;
             availaible = true;
-            counter[0]++;
+            if(System.currentTimeMillis() - AOConsumer.getTimer() < 10000) counter[0]++;
             waiting.signal();
         } catch (Exception e){
             e.printStackTrace();
